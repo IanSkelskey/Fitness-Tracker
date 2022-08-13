@@ -33,17 +33,17 @@ class NavBarSample extends StatefulWidget {
 
 class _NavBarSampleState extends State<NavBarSample> {
   var db = MySQL();
-  var albums = 'Awaiting query results...';
+  List<String> songs = [];
+  List<String> albums = [];
 
-  Future<void> _getAlbum() async {
+  Future<void> _populateSongs() async {
     MySqlConnection conn = await db.getConnection();
-    print('Im getting albums');
-    var results = await conn.query('SELECT * FROM artist');
-    results = await conn.query('SELECT * FROM album');
+    var results = await conn.query('SELECT songtitle, albumtitle FROM song '
+        'INNER JOIN album ON song.albumID = album.albumID');
     for (var row in results) {
-      print('Row Data: $row');
       setState(() {
-        albums = row[1].toString();
+        songs.add(row[0].toString());
+        albums.add(row[1].toString());
       });
     }
   }
@@ -52,14 +52,19 @@ class _NavBarSampleState extends State<NavBarSample> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text(
-          albums,
-          style: const TextStyle(fontSize: 30),
+        child: ListView.builder(
+          itemCount: songs.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              title: Text(songs.elementAt(index)),
+              subtitle: Text(albums.elementAt(index)),
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _getAlbum();
+          _populateSongs();
         },
         backgroundColor: Colors.blue,
         child: const Text('Query'),
