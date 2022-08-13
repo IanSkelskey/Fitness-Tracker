@@ -14,36 +14,35 @@ class MyApp extends StatelessWidget {
       title: 'Welcome to Flutter',
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Navigation Bar Example'),
+          title: const Text('Exercises'),
         ),
         body: const Center(
-          child: NavBarSample(),
+          child: ListViewWithButton(),
         ),
       ),
     );
   }
 }
 
-class NavBarSample extends StatefulWidget {
-  const NavBarSample({Key? key}) : super(key: key);
+class ListViewWithButton extends StatefulWidget {
+  const ListViewWithButton({Key? key}) : super(key: key);
 
   @override
-  State<NavBarSample> createState() => _NavBarSampleState();
+  State<ListViewWithButton> createState() => _ListViewWithButtonState();
 }
 
-class _NavBarSampleState extends State<NavBarSample> {
+class _ListViewWithButtonState extends State<ListViewWithButton> {
   var db = MySQL();
-  List<String> songs = [];
-  List<String> albums = [];
+  List<String> exercises = [];
+  List<String> muscles = [];
 
   Future<void> _populateSongs() async {
     MySqlConnection conn = await db.getConnection();
-    var results = await conn.query('SELECT songtitle, albumtitle FROM song '
-        'INNER JOIN album ON song.albumID = album.albumID');
+    var results = await conn.query('SELECT name, primarymuscle FROM exercise');
     for (var row in results) {
       setState(() {
-        songs.add(row[0].toString());
-        albums.add(row[1].toString());
+        exercises.add(row[0].toString());
+        muscles.add(row[1].toString());
       });
     }
   }
@@ -53,14 +52,30 @@ class _NavBarSampleState extends State<NavBarSample> {
     return Scaffold(
       body: Center(
         child: ListView.builder(
-          itemCount: songs.length,
+          itemCount: exercises.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
-              title: Text(songs.elementAt(index)),
-              subtitle: Text(albums.elementAt(index)),
+              title: Text(exercises.elementAt(index)),
+              subtitle: Text(muscles.elementAt(index)),
             );
           },
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.check),
+            label: 'Exercises',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.comment),
+            label: 'Social',
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -77,8 +92,8 @@ class MySQL {
   Future<MySqlConnection> getConnection() async {
     var settings = ConnectionSettings(
       user: 'root',
-      password: 'Harmony-11',
-      db: 'record-store',
+      password: 'SmartMuscle',
+      db: 'fitness_db',
     );
     var conn = await MySqlConnection.connect(settings);
     // Waiting 1 second for connection to establish. Unexpected
