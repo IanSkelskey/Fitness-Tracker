@@ -76,6 +76,9 @@ class MySQL {
       db: 'record-store',
     );
     var conn = await MySqlConnection.connect(settings);
+    // Waiting 1 second for connection to establish. Unexpected
+    // behavior without this line. See comment:
+    // https://github.com/adamlofts/mysql1_dart/issues/88#issuecomment-894639665
     await Future.delayed(const Duration(seconds: 1));
     return conn;
   }
