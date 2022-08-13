@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mysql1/mysql1.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,55 +32,51 @@ class NavBarSample extends StatefulWidget {
 }
 
 class _NavBarSampleState extends State<NavBarSample> {
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
+  var db = MySQL();
+  var albums = 'Awaiting query results...';
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  Future<void> _getAlbum() async {
+    MySqlConnection conn = await db.getConnection();
+    print('Im getting albums');
+    var results = await conn.query('SELECT * FROM artist');
+    results = await conn.query('SELECT * FROM album');
+    for (var row in results) {
+      print('Row Data: $row');
+      setState(() {
+        albums = row[1].toString();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: Text(
+          albums,
+          style: const TextStyle(fontSize: 30),
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _getAlbum();
+        },
+        backgroundColor: Colors.blue,
+        child: const Text('Query'),
       ),
     );
+  }
+}
+
+class MySQL {
+  Future<MySqlConnection> getConnection() async {
+    var settings = ConnectionSettings(
+      user: 'root',
+      password: 'Harmony-11',
+      db: 'record-store',
+    );
+    var conn = await MySqlConnection.connect(settings);
+    await Future.delayed(const Duration(seconds: 1));
+    return conn;
   }
 }
