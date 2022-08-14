@@ -1,10 +1,10 @@
 import 'package:mysql1/mysql1.dart';
 
 class MySQLHelper {
-
   static late MySqlConnection conn;
 
-  static Future<MySqlConnection> initConnection(String user, String password, String db) async {
+  static Future<MySqlConnection> initConnection(
+      String user, String password, String db) async {
     var settings = ConnectionSettings(
       user: user,
       password: password,
@@ -17,5 +17,4 @@ class MySQLHelper {
     await Future.delayed(const Duration(milliseconds: 500));
     return conn;
   }
-
 }
