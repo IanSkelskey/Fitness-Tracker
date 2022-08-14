@@ -20,7 +20,6 @@ class _ExerciseListViewState extends State<ExerciseListView> {
     }
     var results = await MySQLHelper.conn
         .query('SELECT name, primarymuscle FROM exercise');
-    print('results: $results');
     for (var row in results) {
       setState(() {
         exercises.add(row[0].toString());
