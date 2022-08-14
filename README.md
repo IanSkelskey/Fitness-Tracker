@@ -12,4 +12,5 @@ https://github.com/adamlofts/mysql1_dart
 
 ## Initial Exercises
 
-https://github.com/davejt/exercise/blob/master/data/exercises
+- https://github.com/davejt/exercise/blob/master/data/exercises
+- https://www.acefitness.org/resources/everyone/exercise-library/
