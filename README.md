@@ -14,3 +14,11 @@ https://github.com/adamlofts/mysql1_dart
 
 - https://github.com/davejt/exercise/blob/master/data/exercises
 - https://www.acefitness.org/resources/everyone/exercise-library/
+
+## Screenshots
+
+### Sunday, August 14th 2022
+
+![Home Screen](screenshots/08-14-2022-[0].png)
+
+![Exercise List](screenshots/08-14-2022-[1].png)
